@@ -4,11 +4,12 @@ import pandas as pd
 
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
-from sklearn.externals import joblib
+#import sklearn.external.joblib as extjoblib
+import joblib
+#from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
 
@@ -26,11 +27,11 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('Disaster_Messages_Table', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -42,6 +43,18 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    # get counts of categories
+    category_col = df.columns[4:]
+    count_category = []
+    for cat in list(category_col):
+        count_category.append(df[cat].sum())
+
+    #get top ten categories and sort
+    categories = df.iloc[:,4:]
+    categories_mean = categories.mean().sort_values(ascending=False)[1:11]
+    categories_names = list(categories_mean.index)
+
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -61,6 +74,42 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=category_col,
+                    y=count_category
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=categories_names,
+                    y=categories_mean
+                )
+            ],
+
+            'layout': {
+                'title': 'Most frequent words occur',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Words"
                 }
             }
         }
