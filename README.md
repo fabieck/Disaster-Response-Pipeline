@@ -1,5 +1,7 @@
 # Disaster Response Pipeline Project
 
+You will find the [GitHub repo](https://github.com/fabieck/Disaster-Response-Pipeline.git) here.
+
 1. [Project Overview](#overview)
 2. [Requirements](#requirements)
 3. [Files](#files)

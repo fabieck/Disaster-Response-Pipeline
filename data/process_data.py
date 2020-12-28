@@ -63,6 +63,8 @@ def clean_data(df):
     # drop duplicates
     df.drop_duplicates(inplace=True)
 
+    # remove all rows where related is 2
+    df.drop(df[df.related == 2].index)
     return df
 
 def save_data(df, database_filename):
@@ -76,8 +78,8 @@ def save_data(df, database_filename):
     """
     
     # Save the clean dataset into an sqlite database.
-    engine = create_engine('sqlite:///{}'.format(database_filename)) # e.g. 'sqlite:///InsertDatabaseName.db'
-    df.to_sql('Disaster_Messages_Table', engine, index=False)
+    engine = create_engine('sqlite:///{}'.format(database_filename)) # e.g. 'sqlite:///DisasterResponse.db'
+    df.to_sql('Disaster_Messages_Table', engine, index=False, if_exists='replace')
 
 def main():
     if len(sys.argv) == 4:
