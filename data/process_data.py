@@ -64,7 +64,7 @@ def clean_data(df):
     df.drop_duplicates(inplace=True)
 
     # remove all rows where related is 2
-    df.drop(df[df.related == 2].index)
+    df = df.drop(df[df.related == 2].index)
     return df
 
 def save_data(df, database_filename):
